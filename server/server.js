@@ -1,7 +1,7 @@
-
 import express from "express";
 import cors from "cors";
 import conn from "./src/utils/connect.js";
+import postRoutes from './src/routes/postRoutes.js'; // Importe as rotas de postagens
 
 const PORT = process.env.PORT || 9090;
 const app = express();
@@ -13,10 +13,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
+app.use('/postagens', postRoutes);
+
 app.use("*", (req, res) => {
   res.status(404).json({ message: "Rota não existe." });
 });
-
 
 conn
   .sync()
