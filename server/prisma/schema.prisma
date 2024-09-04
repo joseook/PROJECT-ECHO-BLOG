@@ -1,0 +1,21 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Postagem {
+  id String @id @default(uuid())
+  titulo String
+  conteudo String
+  dataPublicacao DateTime
+  autor String
+  imagem String
+}
+
+
+
