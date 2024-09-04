@@ -1,8 +1,7 @@
-import express from 'express';
-import { getAllPost, createPost, getPostById, updatePost, deletePost, uploadImage } from '../controllers/postController.js';
+import { Router } from 'express';
+import { getAllPost, createPost, getPostById, updatePost, deletePost } from '../controller/postController.js';
 
-const router = express.Router();
-
+const router = Router();
 
 router.get('/', getAllPost);
 
@@ -13,7 +12,5 @@ router.get('/:id', getPostById);
 router.put('/:id', updatePost);
 
 router.delete('/:id', deletePost);
-
-router.post('/:id/imagem', uploadImage);
 
 export default router;

@@ -1,7 +1,9 @@
 import express from "express";
 import cors from "cors";
-import conn from "./src/utils/connect.js";
-import postRoutes from './src/routes/postRoutes.js'; // Importe as rotas de postagens
+import prisma from "./src/utils/connect.js";
+
+import postRoutes from './src/routes/postRoutes.js';
+import authorRoutes from './src/routes/authorRoutes.js'
 
 const PORT = process.env.PORT || 9090;
 const app = express();
@@ -14,12 +16,13 @@ app.use(express.json());
 
 
 app.use('/postagens', postRoutes);
+app.use('/app', authorRoutes)
 
 app.use("*", (req, res) => {
   res.status(404).json({ message: "Rota não existe." });
 });
 
-conn
+prisma
   .sync()
   .then(() => {
     app.listen(PORT, () => {
