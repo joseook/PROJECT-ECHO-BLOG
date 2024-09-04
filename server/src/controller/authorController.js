@@ -5,7 +5,7 @@ export const createAuthor = async (req, res) => {
     try {
         const authorSchema = z.object({
             name: z.string().min(4, "O nome deve conter pelo menos 4 caracteres."),
-            number: z.number.min(8, "O numero deve conter pelo menos 10 caracteres."),
+            number: z.number().min(8, "O número deve conter pelo menos 8 dígitos."),
         });
 
         const { name, number } = authorSchema.parse(req.body);
