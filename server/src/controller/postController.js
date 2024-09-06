@@ -1,6 +1,6 @@
 import prisma from "../utils/connect.js";
 import { z } from "zod";
-
+import upload from '../config/multerConfig.js';
 
 export const getAllPost = async (req, res) => {
     try {
@@ -49,7 +49,6 @@ export const createPost = async (req, res) => {
             data: {
                 titulo,
                 conteudo,
-                dataPublicacao: new Date(),
                 author: {
                     connect: { id: authorId }
                 },
@@ -122,4 +121,36 @@ export const deletePost = async (req, res) => {
         console.error(error);
         res.status(400).json({ message: "Erro ao excluir a postagem.", error: error.message });
     }
+};
+
+export const uploadImage = (req, res) => {
+    upload.single('imagem')(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ message: err.message });
+        }
+
+        try {
+            const postId = req.params.id;
+            const post = await prisma.post.findUnique({
+                where: { id: postId }
+            });
+
+            if (!post) {
+                return res.status(404).json({ message: "Postagem não encontrada." });
+            }
+            const imagePath = req.file ? `/uploads/images/${req.file.filename}` : null;
+     
+            const updatedPost = await prisma.post.update({
+                where: { id: postId },
+                data: {
+                    imagem: imagePath
+                }
+            });
+
+            res.json(updatedPost);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Erro ao atualizar a postagem com imagem.", error: error.message });
+        }
+    });
 };

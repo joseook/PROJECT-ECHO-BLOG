@@ -14,7 +14,7 @@ export const createAuthor = async (req, res) => {
             data: {
                 name,
                 number
-            }
+            }       
         });
 
         res.status(201).json(newAuthor);
