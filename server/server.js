@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import postRoutes from './src/routes/postRoutes.js';
-import authorRoutes from './src/routes/authorRoutes.js'
+import userRoutes from "./src/routes/userRoutes.js";
 
 const PORT = process.env.PORT || 9090;
 const app = express();
@@ -14,7 +14,7 @@ app.use(express.json());
 
 
 app.use('/postagens', postRoutes);
-app.use('/app', authorRoutes)
+app.use('/app', userRoutes)
 
 app.use("*", (req, res) => {
   res.status(404).json({ message: "Rota não existe." });
