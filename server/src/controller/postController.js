@@ -33,6 +33,28 @@ export const getAllPost = async (req, res) => {
     }
 };
 
+export const getPostagensPorAutor = async (req, res) => {
+    try {
+      
+        const querySchema = z.object({
+            autor: z.string().uuid() 
+        });
+        
+        const { autor } = querySchema.parse(req.query);
+
+        const postagens = await prisma.post.findMany({
+            where: {
+                author_id: autor
+            }
+        });
+
+        res.status(200).json(postagens);
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ message: "Erro ao buscar postagens.", error: error.message });
+    }
+};
+
 export const createPost = async (req, res) => {
     try {
         const postSchema = z.object({

@@ -22,7 +22,6 @@ model Post {
   conteudo       String
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
-  dataPublicacao DateTime
   author         User?    @relation(fields: [author_id], references: [id])
   author_id      String?
   published      Boolean

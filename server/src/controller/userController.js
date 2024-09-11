@@ -59,7 +59,7 @@ export const loginUser = async (req, res) => {
             return res.status(400).json({ message: "E-mail ou senha incorretos." });
         }
 
-        // Gerar token JWT
+
         const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
             expiresIn: "1h",
         });
@@ -80,7 +80,7 @@ export const updateUserProfile = async (req, res) => {
             password: z.string().min(8).optional(),
         }).parse(req.body);
 
-        // Hash da nova senha, se fornecida
+
         let hashedPassword = undefined;
         if (password) {
             hashedPassword = await bcrypt.hash(password, 10);

@@ -13,9 +13,9 @@ const router = Router();
 
 router.post('/registro', registerUser);
 router.post('/login', loginUser);
-router.put('/:id', authenticateToken, updateUserProfile);
+router.put('/usuario/:id', authenticateToken, updateUserProfile);
 router.get('/', authenticateToken, authorizeRole(['administrador']), listUsers);
-router.delete('/:id', authenticateToken, authorizeRole(['administrador']), deleteUser);
+router.delete('/usuario/:id', authenticateToken, authorizeRole(['administrador']), deleteUser);
 router.patch('/:id/papel', authenticateToken, authorizeRole(['administrador']), updateUserRole);
 
 export default router;
