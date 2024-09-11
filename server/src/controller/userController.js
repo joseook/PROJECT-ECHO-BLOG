@@ -137,7 +137,7 @@ export const deleteUser = async (req, res) => {
 
 export const updateUserRole = async (req, res) => {
     try {
-        const id = req.params.id;
+        const id = req.params.id;   
         const { role } = z.object({ role: z.enum(["administrador", "autor", "leitor"]) }).parse(req.body);
 
         const updatedUser = await prisma.user.update({

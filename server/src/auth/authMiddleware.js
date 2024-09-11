@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 
-// Middleware de autenticação
 export const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -18,7 +17,7 @@ export const authenticateToken = (req, res, next) => {
     }
 };
 
-export const authorizeRole = (roles) => {
+export const roleAuthorizationProfile = (roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {
             return res.status(403).json({ message: "Acesso negado. Você não tem permissão para acessar este recurso." });
