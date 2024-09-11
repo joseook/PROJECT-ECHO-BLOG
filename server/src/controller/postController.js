@@ -2,6 +2,10 @@ import prisma from "../utils/connect.js";
 import { z } from "zod";
 import upload from '../config/multerConfig.js';
 
+const getSchema = z.object({
+    id: z.string().uuid()
+});
+
 export const getAllPost = async (req, res) => {
     try {
         const limit = parseInt(req.query.limit, 10) || 10;
@@ -88,6 +92,8 @@ export const createPost = async (req, res) => {
 
 export const getPostById = async (req, res) => {
     try {
+   
+
         const id = getSchema.parse(req.params);
 
         const post = await prisma.post.findUnique({
@@ -108,6 +114,8 @@ export const getPostById = async (req, res) => {
 
 export const updatePost = async (req, res) => {
     try {
+    
+
         const id = getSchema.parse(req.params);
         const updateSchema = z.object({
             titulo: z.string().min(4).optional(),
@@ -132,6 +140,7 @@ export const updatePost = async (req, res) => {
 
 export const deletePost = async (req, res) => {
     try {
+    
         const id = getSchema.parse(req.params);
 
         await prisma.post.delete({
