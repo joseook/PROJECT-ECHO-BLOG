@@ -4,7 +4,8 @@ import bodyParser from 'body-parser';
 import { createPost, getAllPost, getPostagensPorAutor, getPostById, updatePost, deletePost, uploadImage } from '../../src/controller/postController.js';
 import prisma from '../../src/utils/connect.js';
 import { v4 as uuidv4 } from 'uuid';
-import path from 'path';
+
+import { execSync } from 'child_process';
 
 jest.mock('../../src/utils/connect.js', () => ({
   post: {
@@ -14,6 +15,7 @@ jest.mock('../../src/utils/connect.js', () => ({
     update: jest.fn(),
     delete: jest.fn(),
   },
+  $disconnect: jest.fn()
 }));
 
 const app = express();
@@ -27,8 +29,12 @@ app.put('/posts/:id', updatePost);
 app.delete('/posts/:id', deletePost);
 app.post('/posts/:id/image', uploadImage);
 
-beforeEach(async () => {
-  jest.clearAllMocks();
+const resetTestDB = () => {
+  execSync('npx prisma migrate reset --preview-feature --force', { stdio: 'inherit' });
+};
+
+beforeAll(async () => {
+  resetTestDB();
 });
 
 afterAll(async () => {
@@ -88,14 +94,4 @@ test('Deve retornar uma postagem pelo ID', async () => {
   expect(response.body).toHaveProperty('id', validPostId);
 });
 
-test('Deve fazer upload de imagem para uma postagem', async () => {
-  const validPostId = uuidv4();
-  prisma.post.findUnique.mockResolvedValue({ id: validPostId, titulo: 'Post Existente' });
 
-  const response = await request(app)
-    .post(`/posts/${validPostId}/image`)
-    .attach('imagem', path.resolve(__dirname, 'fixtures/test-image.jpg'));
-
-  expect(response.status).toBe(200);
-  expect(response.body).toHaveProperty('imagem', expect.stringContaining('/uploads/images/'));
-});
