@@ -1,3 +1,4 @@
+
 import jwt from "jsonwebtoken";
 
 export const authenticateToken = (req, res, next) => {
@@ -10,16 +11,17 @@ export const authenticateToken = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
+        req.user = decoded; 
         next();
     } catch (error) {
         return res.status(403).json({ message: "Token inválido ou expirado." });
     }
 };
 
+
 export const roleAuthorizationProfile = (roles) => {
     return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
+        if (!req.user || !roles.includes(req.user.role)) {
             return res.status(403).json({ message: "Acesso negado. Você não tem permissão para acessar este recurso." });
         }
         next();

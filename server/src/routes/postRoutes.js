@@ -5,7 +5,7 @@ const router = Router();
 
 router.get('/', getAllPost);
 
-router.post('/', roleAuthorizationProfile(["administrador", "autor"]), createPost);
+router.post('/', authenticateToken, roleAuthorizationProfile(["administrador", "autor"]), createPost);
 
 router.post('/:id/imagem', authenticateToken, roleAuthorizationProfile(["administrador", "autor"]), uploadImage);
 
