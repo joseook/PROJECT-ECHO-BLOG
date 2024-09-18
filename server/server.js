@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import postRoutes from './src/routes/postRoutes.js';
 import userRoutes from "./src/routes/userRoutes.js";
+import commentsRoutes from "./src/routes/commentsRoutes.js"
 
 const PORT = process.env.PORT || 9090;
 const app = express();
@@ -13,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
-app.use('/postagens', postRoutes);
+app.use('/postagens', postRoutes, commentsRoutes);
 app.use('/app', userRoutes)
 
 app.use("*", (req, res) => {

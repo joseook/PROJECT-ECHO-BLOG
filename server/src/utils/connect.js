@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
 
-// Carregar variáveis de ambiente
+
 dotenv.config();
 
 let prisma;

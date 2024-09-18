@@ -154,6 +154,40 @@ export const deletePost = async (req, res) => {
     }
 };
 
+export const toggleLike = async (req, res) => {
+    const { postagemId } = req.params;
+    const { usuarioId } = req.body;
+
+    try {
+        const existingLike = await prisma.likes.findUnique({
+            where: {
+                usuarioId_postagemId: {
+                    usuarioId,
+                    postagemId
+                }
+            }
+        });
+
+        if (existingLike) {
+            await prisma.likes.delete({
+                where: { id: existingLike.id }
+            });
+            res.status(204).json({message: "Removida a curtida da postagem."}); 
+        } else {
+            await prisma.likes.create({
+                data: {
+                    usuarioId,
+                    postagemId
+                }
+            });
+            res.status(201).json({message: "Postagem curtida!."});
+        }
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao processar a curtida." });
+    }
+};
+
+
 export const uploadImage = (req, res) => {
     upload.single('imagem')(req, res, async (err) => {
         if (err) {

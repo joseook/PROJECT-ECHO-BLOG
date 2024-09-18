@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,12 +9,14 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
+  id       String   @id @default(uuid())
   name     String
-  email    String @unique
+  email    String   @unique
   password String
-  role     String @default("leitor")
-  posts    Post[]
+  role     String   @default("leitor")
+  posts    Post[]   @relation("PostAuthor")
+  comments Comments[]
+  likes    Likes[]
 }
 
 model Post {
@@ -22,8 +25,35 @@ model Post {
   conteudo       String
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
-  author         User?    @relation(fields: [author_id], references: [id])
   author_id      String?
   published      Boolean
   imagem         String
+  comments       Comments[]
+  likes          Likes[]
+
+  author         User?    @relation("PostAuthor", fields: [author_id], references: [id])
+}
+
+model Comments { 
+  id        String   @id @default(uuid())
+  conteudo  String
+  usuarioId String
+  postagemId String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  usuario   User?    @relation(fields: [usuarioId], references: [id])
+  postagem   Post?    @relation(fields: [postagemId], references: [id])
+}
+
+model Likes {
+  id         String   @id @default(uuid())
+  usuarioId  String
+  postagemId String
+  created_at DateTime @default(now())
+
+  usuario    User @relation(fields: [usuarioId], references: [id])
+  postagem   Post @relation(fields: [postagemId], references: [id])
+
+  @@unique([usuarioId, postagemId]) 
 }
