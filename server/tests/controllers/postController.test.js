@@ -41,6 +41,32 @@ afterAll(async () => {
   await prisma.$disconnect();
 });
 
+test('Deve listar todas as postagens com paginação', async () => {
+  prisma.post.findMany.mockResolvedValue([
+    { id: uuidv4(), titulo: 'Post 1', conteudo: 'Conteúdo do post 1', authorId: uuidv4() },
+    { id: uuidv4(), titulo: 'Post 2', conteudo: 'Conteúdo do post 2', authorId: uuidv4() }
+  ]);
+
+  prisma.post.count.mockResolvedValue(2);
+
+  const response = await request(app).get('/posts?page=1&limit=10');
+  expect(response.status).toBe(200);
+  expect(response.body.totalItems).toBe(2);
+  expect(response.body.postagens.length).toBe(2);
+});
+
+test('Deve buscar postagens por autor', async () => {
+  const authorId = uuidv4();
+  prisma.post.findMany.mockResolvedValue([
+    { id: uuidv4(), titulo: 'Post 1', conteudo: 'Conteúdo do post 1', authorId },
+  ]);
+
+  const response = await request(app).get(`/posts/author?autor=${authorId}`);
+  expect(response.status).toBe(200);
+  expect(response.body.length).toBe(1);
+  expect(response.body[0].authorId).toBe(authorId);
+});
+
 test('Deve criar uma postagem com sucesso', async () => {
   const authorId = uuidv4();
   prisma.post.create.mockResolvedValue({
@@ -94,4 +120,27 @@ test('Deve retornar uma postagem pelo ID', async () => {
   expect(response.body).toHaveProperty('id', validPostId);
 });
 
+test('Deve atualizar uma postagem', async () => {
+  const postId = uuidv4();
+  prisma.post.update.mockResolvedValue({
+    id: postId,
+    titulo: 'Post Atualizado',
+    conteudo: 'Conteúdo atualizado',
+  });
 
+  const response = await request(app)
+    .put(`/posts/${postId}`)
+    .send({ titulo: 'Post Atualizado', conteudo: 'Conteúdo atualizado' });
+
+  expect(response.status).toBe(200);
+  expect(response.body.titulo).toBe('Post Atualizado');
+});
+
+test('Deve excluir uma postagem', async () => {
+  const postId = uuidv4();
+  prisma.post.delete.mockResolvedValue({ id: postId });
+
+  const response = await request(app).delete(`/posts/${postId}`);
+  expect(response.status).toBe(200);
+  expect(response.body.message).toBe('Postagem excluída com sucesso.');
+});
